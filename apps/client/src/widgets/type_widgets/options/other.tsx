@@ -5,7 +5,7 @@ import { t } from "../../../services/i18n";
 import search from "../../../services/search";
 import server from "../../../services/server";
 import toast from "../../../services/toast";
-import { isElectron } from "../../../services/utils";
+import { dynamicRequire, isElectron } from "../../../services/utils";
 import { Badge } from "../../react/Badge";
 import Button from "../../react/Button";
 import FormText from "../../react/FormText";
@@ -14,6 +14,8 @@ import { useTriliumOption, useTriliumOptionBool, useTriliumOptionJson } from "..
 import OptionsRow, { OptionsRowWithButton, OptionsRowWithToggle } from "./components/OptionsRow";
 import OptionsSection from "./components/OptionsSection";
 import TimeSelector from "./components/TimeSelector";
+
+const START_HIDDEN_TO_TRAY_ARG = "--start-hidden-to-tray";
 
 export default function OtherSettings() {
     return (
@@ -110,6 +112,8 @@ function SearchEngineSettings() {
 function TrayOptionsSettings() {
     const [ disableTray, setDisableTray ] = useTriliumOptionBool("disableTray");
     const [ closeToTray, setCloseToTray ] = useTriliumOptionBool("closeToTray");
+    const [ desktopAutoStart, setDesktopAutoStart ] = useTriliumOptionBool("desktopAutoStart");
+    const [ desktopAutoStartToTray, setDesktopAutoStartToTray ] = useTriliumOptionBool("desktopAutoStartToTray");
 
     return (
         <OptionsSection title={t("tray.title")}>
@@ -118,7 +122,10 @@ function TrayOptionsSettings() {
                 label={t("tray.enable_tray")}
                 description={t("tray.enable_tray_description")}
                 currentValue={!disableTray}
-                onChange={trayEnabled => setDisableTray(!trayEnabled)}
+                onChange={async trayEnabled => {
+                    await setDisableTray(!trayEnabled);
+                    syncDesktopAutoStartSettings(desktopAutoStart, desktopAutoStartToTray && trayEnabled);
+                }}
             />
 
             <OptionsRowWithToggle
@@ -129,8 +136,52 @@ function TrayOptionsSettings() {
                 onChange={setCloseToTray}
                 disabled={disableTray}
             />
+
+            <OptionsRowWithToggle
+                name="desktop-auto-start"
+                label={t("tray.desktop_auto_start")}
+                description={t("tray.desktop_auto_start_description")}
+                currentValue={desktopAutoStart}
+                onChange={async value => {
+                    await setDesktopAutoStart(value);
+                    syncDesktopAutoStartSettings(value, desktopAutoStartToTray && !disableTray);
+                }}
+            />
+
+            <OptionsRowWithToggle
+                name="desktop-auto-start-to-tray"
+                label={t("tray.desktop_auto_start_to_tray")}
+                description={t("tray.desktop_auto_start_to_tray_description")}
+                currentValue={desktopAutoStartToTray}
+                onChange={async value => {
+                    await setDesktopAutoStartToTray(value);
+                    syncDesktopAutoStartSettings(desktopAutoStart, value && !disableTray);
+                }}
+                disabled={!desktopAutoStart || disableTray}
+            />
         </OptionsSection>
     );
+}
+
+function syncDesktopAutoStartSettings(openAtLogin: boolean, startHiddenToTray: boolean) {
+    if (!isElectron()) {
+        return;
+    }
+
+    const app = dynamicRequire("@electron/remote").app;
+
+    app.setLoginItemSettings({
+        openAtLogin,
+        openAsHidden: startHiddenToTray,
+        args: getDesktopAutoStartArgs(startHiddenToTray)
+    });
+}
+
+function getDesktopAutoStartArgs(startHiddenToTray: boolean) {
+    const args = (process as NodeJS.Process & { defaultApp?: boolean }).defaultApp ? process.argv.slice(1) : [];
+    const filteredArgs = args.filter(arg => arg !== START_HIDDEN_TO_TRAY_ARG);
+
+    return startHiddenToTray ? [ ...filteredArgs, START_HIDDEN_TO_TRAY_ARG ] : filteredArgs;
 }
 
 function NoteErasureTimeout() {

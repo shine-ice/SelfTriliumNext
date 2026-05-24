@@ -1462,7 +1462,11 @@
     "enable_tray": "Tray icon",
     "enable_tray_description": "Trilium needs to be restarted for this change to take effect.",
     "close_to_tray": "Hide to tray on close",
-    "close_to_tray_description": "When the tray icon is enabled, closing a desktop window hides it instead of quitting Trilium."
+    "close_to_tray_description": "When the tray icon is enabled, closing a desktop window hides it instead of quitting Trilium.",
+    "desktop_auto_start": "Start Trilium when signing in",
+    "desktop_auto_start_description": "Launch the desktop app automatically after you sign in to the operating system.",
+    "desktop_auto_start_to_tray": "Start hidden to tray",
+    "desktop_auto_start_to_tray_description": "When auto-starting, keep the main window hidden and open Trilium from the tray icon."
   },
   "text_editor": {
     "title": "Editor",

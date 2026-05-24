@@ -166,6 +166,8 @@ const defaultOptions: DefaultOption[] = [
     { name: "checkForUpdates", value: "true", isSynced: true },
     { name: "disableTray", value: "false", isSynced: false },
     { name: "closeToTray", value: "true", isSynced: false },
+    { name: "desktopAutoStart", value: "false", isSynced: false },
+    { name: "desktopAutoStartToTray", value: "false", isSynced: false },
     { name: "eraseUnusedAttachmentsAfterSeconds", value: "2592000", isSynced: true }, // default 30 days
     { name: "eraseUnusedAttachmentsAfterTimeScale", value: "86400", isSynced: true }, // default 86400 seconds = Day
     { name: "logRetentionDays", value: "90", isSynced: false }, // default 90 days

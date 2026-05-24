@@ -90,6 +90,8 @@ const ALLOWED_OPTIONS = new Set<OptionNames>([
     "checkForUpdates",
     "disableTray",
     "closeToTray",
+    "desktopAutoStart",
+    "desktopAutoStartToTray",
     "eraseUnusedAttachmentsAfterSeconds",
     "eraseUnusedAttachmentsAfterTimeScale",
     "customSearchEngineName",

@@ -166,6 +166,8 @@ export interface OptionDefinitions extends KeyboardShortcutsOptions<KeyboardActi
     checkForUpdates: boolean;
     disableTray: boolean;
     closeToTray: boolean;
+    desktopAutoStart: boolean;
+    desktopAutoStartToTray: boolean;
     editedNotesOpenInRibbon: boolean;
     codeBlockWordWrap: boolean;
     codeBlockTabWidth: number;

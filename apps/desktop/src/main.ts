@@ -25,6 +25,8 @@ import { deferred, LOCALES } from "../../../packages/commons/src";
 import { PRODUCT_NAME } from "./app-info";
 import DesktopPlatformProvider from "./platform_provider";
 
+const START_HIDDEN_TO_TRAY_ARG = "--start-hidden-to-tray";
+
 async function main() {
     // Ignore EPIPE errors on stdout/stderr — these occur when the parent process
     // pipe breaks (e.g. after system suspend with Snap packaging).
@@ -200,7 +202,13 @@ async function onReady() {
     if (sql_init.isDbInitialized()) {
         await sql_init.dbReady;
 
-        await windowService.createMainWindow(app);
+        syncDesktopAutoStartSettings();
+
+        const startHiddenToTray = process.argv.includes(START_HIDDEN_TO_TRAY_ARG)
+            && options.getOptionBool("desktopAutoStartToTray")
+            && !options.getOptionBool("disableTray");
+
+        await windowService.createMainWindow(app, { show: !startHiddenToTray });
 
         if (process.platform === "darwin") {
             app.on("activate", async () => {
@@ -217,6 +225,24 @@ async function onReady() {
     }
 
     await windowService.registerGlobalShortcuts();
+}
+
+function syncDesktopAutoStartSettings() {
+    const startHiddenToTray = options.getOptionBool("desktopAutoStartToTray")
+        && !options.getOptionBool("disableTray");
+
+    app.setLoginItemSettings({
+        openAtLogin: options.getOptionBool("desktopAutoStart"),
+        openAsHidden: startHiddenToTray,
+        args: getDesktopAutoStartArgs(startHiddenToTray)
+    });
+}
+
+function getDesktopAutoStartArgs(startHiddenToTray: boolean) {
+    const args = (process as NodeJS.Process & { defaultApp?: boolean }).defaultApp ? process.argv.slice(1) : [];
+    const filteredArgs = args.filter(arg => arg !== START_HIDDEN_TO_TRAY_ARG);
+
+    return startHiddenToTray ? [ ...filteredArgs, START_HIDDEN_TO_TRAY_ARG ] : filteredArgs;
 }
 
 function getElectronLocale() {

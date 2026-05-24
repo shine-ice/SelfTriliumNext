@@ -34,6 +34,9 @@ electron.app.on("before-quit", () => {
 });
 
 function trackWindowFocus(win: BrowserWindow) {
+    allWindows = allWindows.filter(w => !w.isDestroyed() && w !== win);
+    allWindows.push(win);
+
     // We need to get the last focused window from allWindows. If the last window is closed, we return the previous window.
     // Therefore, we need to push the window into the allWindows array every time it gets focused.
     win.on("focus", () => {
@@ -107,7 +110,7 @@ electron.ipcMain.on("add-word-to-dictionary", (event, word: string) => {
 
 initPrintingHandlers();
 
-async function createMainWindow(app: App) {
+async function createMainWindow(app: App, opts: { show?: boolean } = {}) {
     if ("setUserTasks" in app) {
         app.setUserTasks([
             {
@@ -148,6 +151,7 @@ async function createMainWindow(app: App) {
             webviewTag: true
         },
         icon: getIcon(),
+        show: opts.show ?? true,
         ...getWindowExtraOpts()
     });
 
