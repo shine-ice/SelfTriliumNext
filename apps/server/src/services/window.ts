@@ -54,7 +54,12 @@ function trackWindowFocus(win: BrowserWindow) {
 
 function hideWindowOnClose(win: BrowserWindow) {
     win.on("close", (event) => {
-        if (isQuitting || isMac || optionService.getOptionBool("disableTray")) {
+        if (
+            isQuitting
+            || isMac
+            || optionService.getOptionBool("disableTray")
+            || !optionService.getOptionBool("closeToTray")
+        ) {
             return;
         }
 

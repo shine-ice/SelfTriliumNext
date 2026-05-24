@@ -1299,7 +1299,9 @@
   "tray": {
     "title": "系统托盘",
     "enable_tray": "托盘图标",
-    "enable_tray_description": "需重启 Trilium 以使此更改生效。"
+    "enable_tray_description": "需重启 Trilium 以使此更改生效。",
+    "close_to_tray": "关闭时隐藏到托盘",
+    "close_to_tray_description": "启用托盘图标时，关闭桌面窗口会隐藏窗口而不是退出 Trilium。"
   },
   "heading_style": {
     "title": "标题风格",
