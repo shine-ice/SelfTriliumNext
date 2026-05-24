@@ -264,10 +264,7 @@ function updateTrayMenu() {
             type: "normal",
             icon: getIconPath("close"),
             click: () => {
-                const windows = electron.BrowserWindow.getAllWindows();
-                windows.forEach(window => {
-                    window.close();
-                });
+                electron.app.quit();
             }
         }
     ]);

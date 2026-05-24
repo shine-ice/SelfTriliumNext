@@ -1,4 +1,5 @@
-import { type App, type BrowserWindow, type BrowserWindowConstructorOptions, default as electron, type Session, type WebContents } from "electron";
+import * as electron from "electron";
+import type { App, BrowserWindow, BrowserWindowConstructorOptions, Session, WebContents } from "electron";
 import path from "path";
 import url from "url";
 
@@ -26,6 +27,11 @@ let mainWindow: BrowserWindow | null;
 let setupWindow: BrowserWindow | null;
 let allWindows: BrowserWindow[] = []; // // Used to store all windows, sorted by the order of focus.
 const loadedSpellcheckSessions = new WeakSet<Session>();
+let isQuitting = false;
+
+electron.app.on("before-quit", () => {
+    isQuitting = true;
+});
 
 function trackWindowFocus(win: BrowserWindow) {
     // We need to get the last focused window from allWindows. If the last window is closed, we return the previous window.
@@ -43,6 +49,17 @@ function trackWindowFocus(win: BrowserWindow) {
         if (!optionService.getOptionBool("disableTray")) {
             electron.ipcMain.emit("reload-tray");
         }
+    });
+}
+
+function hideWindowOnClose(win: BrowserWindow) {
+    win.on("close", (event) => {
+        if (isQuitting || isMac || optionService.getOptionBool("disableTray")) {
+            return;
+        }
+
+        event.preventDefault();
+        win.hide();
     });
 }
 
@@ -70,6 +87,7 @@ async function createExtraWindow(extraWindowHash: string) {
 
     configureWebContents(win.webContents, spellcheckEnabled);
 
+    hideWindowOnClose(win);
     trackWindowFocus(win);
 }
 
@@ -135,6 +153,7 @@ async function createMainWindow(app: App) {
     mainWindow.on("closed", () => (mainWindow = null));
 
     configureWebContents(mainWindow.webContents, spellcheckEnabled);
+    hideWindowOnClose(mainWindow);
     trackWindowFocus(mainWindow);
 }
 

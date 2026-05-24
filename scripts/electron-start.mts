@@ -8,6 +8,7 @@ execSync(`${getElectronPath()} ${args.join(" ")} --no-sandbox`, {
     stdio: "inherit",
     env: {
         ...process.env,
+        ELECTRON_RUN_AS_NODE: undefined,
         NODE_OPTIONS: "--import tsx",
         NODE_ENV: "development",
         TRILIUM_ENV: "dev",

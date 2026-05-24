@@ -1,4 +1,5 @@
-import { default as electron, ipcMain, type IpcMainEvent } from "electron";
+import * as electron from "electron";
+import { ipcMain, type IpcMainEvent } from "electron";
 import fs from "fs/promises";
 import { t } from "i18next";
 
