@@ -92,6 +92,7 @@ const ALLOWED_OPTIONS = new Set<OptionNames>([
     "closeToTray",
     "desktopAutoStart",
     "desktopAutoStartToTray",
+    "desktopStartHidden",
     "eraseUnusedAttachmentsAfterSeconds",
     "eraseUnusedAttachmentsAfterTimeScale",
     "customSearchEngineName",

@@ -114,6 +114,7 @@ function TrayOptionsSettings() {
     const [ closeToTray, setCloseToTray ] = useTriliumOptionBool("closeToTray");
     const [ desktopAutoStart, setDesktopAutoStart ] = useTriliumOptionBool("desktopAutoStart");
     const [ desktopAutoStartToTray, setDesktopAutoStartToTray ] = useTriliumOptionBool("desktopAutoStartToTray");
+    const [ desktopStartHidden, setDesktopStartHidden ] = useTriliumOptionBool("desktopStartHidden");
 
     return (
         <OptionsSection title={t("tray.title")}>
@@ -158,6 +159,15 @@ function TrayOptionsSettings() {
                     syncDesktopAutoStartSettings(desktopAutoStart, value && !disableTray);
                 }}
                 disabled={!desktopAutoStart || disableTray}
+            />
+
+            <OptionsRowWithToggle
+                name="desktop-start-hidden"
+                label={t("tray.desktop_start_hidden")}
+                description={t("tray.desktop_start_hidden_description")}
+                currentValue={desktopStartHidden}
+                onChange={setDesktopStartHidden}
+                disabled={disableTray}
             />
         </OptionsSection>
     );

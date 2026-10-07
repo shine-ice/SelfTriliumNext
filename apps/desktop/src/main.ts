@@ -94,6 +94,15 @@ async function main() {
     });
 
     app.on("second-instance", (event, commandLine) => {
+        // A repeated background login launch must not reveal the running window.
+        // An explicit request for a new window still takes precedence.
+        if (commandLine.includes(START_HIDDEN_TO_TRAY_ARG)
+            && !commandLine.includes("--new-window")
+            && !options.getOptionBool("disableTray")
+            && (options.getOptionBool("desktopAutoStartToTray") || options.getOptionBool("desktopStartHidden"))) {
+            return;
+        }
+
         const lastFocusedWindow = windowService.getLastFocusedWindow();
         if (commandLine.includes("--new-window")) {
             windowService.createExtraWindow("");
@@ -204,11 +213,13 @@ async function onReady() {
 
         syncDesktopAutoStartSettings();
 
-        const startHiddenToTray = process.argv.includes(START_HIDDEN_TO_TRAY_ARG)
-            && options.getOptionBool("desktopAutoStartToTray")
-            && !options.getOptionBool("disableTray");
+        const startHidden = !options.getOptionBool("disableTray") && (
+            options.getOptionBool("desktopStartHidden")
+            || (process.argv.includes(START_HIDDEN_TO_TRAY_ARG)
+                && options.getOptionBool("desktopAutoStartToTray"))
+        );
 
-        await windowService.createMainWindow(app, { show: !startHiddenToTray });
+        await windowService.createMainWindow(app, { show: !startHidden });
 
         if (process.platform === "darwin") {
             app.on("activate", async () => {

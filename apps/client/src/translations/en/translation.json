@@ -1466,7 +1466,9 @@
     "desktop_auto_start": "Start Trilium when signing in",
     "desktop_auto_start_description": "Launch the desktop app automatically after you sign in to the operating system.",
     "desktop_auto_start_to_tray": "Start hidden to tray",
-    "desktop_auto_start_to_tray_description": "When auto-starting, keep the main window hidden and open Trilium from the tray icon."
+    "desktop_auto_start_to_tray_description": "When auto-starting, keep the main window hidden and open Trilium from the tray icon.",
+    "desktop_start_hidden": "Start silently",
+    "desktop_start_hidden_description": "Keep the main window hidden whenever Trilium starts. Open it from the tray icon."
   },
   "text_editor": {
     "title": "Editor",

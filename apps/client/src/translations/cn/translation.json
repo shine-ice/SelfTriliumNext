@@ -1305,7 +1305,9 @@
     "desktop_auto_start": "登录系统时启动 Trilium",
     "desktop_auto_start_description": "登录操作系统后自动启动桌面应用。",
     "desktop_auto_start_to_tray": "自启动时隐藏到托盘",
-    "desktop_auto_start_to_tray_description": "通过开机自启动打开时，隐藏主窗口并从托盘图标打开 Trilium。"
+    "desktop_auto_start_to_tray_description": "通过开机自启动打开时，隐藏主窗口并从托盘图标打开 Trilium。",
+    "desktop_start_hidden": "静默启动",
+    "desktop_start_hidden_description": "每次启动 Trilium 时隐藏主窗口，可通过托盘图标打开。"
   },
   "heading_style": {
     "title": "标题风格",

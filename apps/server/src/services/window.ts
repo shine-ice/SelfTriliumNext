@@ -155,7 +155,14 @@ async function createMainWindow(app: App, opts: { show?: boolean } = {}) {
         ...getWindowExtraOpts()
     });
 
-    mainWindowState.manage(mainWindow);
+    if (opts.show === false) {
+        // manage() restores maximized/fullscreen state, which can show a hidden
+        // window. Wait until the user opens it, retaining the saved state until then.
+        const hiddenWindow = mainWindow;
+        hiddenWindow.once("show", () => mainWindowState.manage(hiddenWindow));
+    } else {
+        mainWindowState.manage(mainWindow);
+    }
 
     mainWindow.setMenuBarVisibility(false);
     mainWindow.loadURL(`http://127.0.0.1:${port}`);
